@@ -12,12 +12,18 @@ use DyanGalih\LaravelRegion\Http\Controllers\GetVillageDetailController;
 use DyanGalih\LaravelRegion\Http\Controllers\SearchRegenciesController;
 use DyanGalih\LaravelRegion\Http\Controllers\SearchDistrictsController;
 use DyanGalih\LaravelRegion\Http\Controllers\SearchVillagesController;
+use DyanGalih\LaravelRegion\Http\Controllers\GetRegencyByIdController;
+use DyanGalih\LaravelRegion\Http\Controllers\GetDistrictByIdController;
+use DyanGalih\LaravelRegion\Http\Controllers\GetVillageByIdController;
 
 Route::prefix('api/region')->middleware(config('region.middleware'))->group(function () {
     // Global Flat Routes
     Route::get('regencies', SearchRegenciesController::class)->name('region.regencies.index');
+    Route::get('regencies/{id}', GetRegencyByIdController::class)->name('region.regencies.show');
     Route::get('districts', SearchDistrictsController::class)->name('region.districts.index');
+    Route::get('districts/{id}', GetDistrictByIdController::class)->name('region.districts.show');
     Route::get('villages', SearchVillagesController::class)->name('region.villages.index');
+    Route::get('villages/{id}', GetVillageByIdController::class)->name('region.villages.show');
 
     // Provinces Hierarchy
     Route::prefix('provinces')->group(function () {

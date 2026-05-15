@@ -157,4 +157,34 @@ class RegionService
 
         return ProvinceData::from($province);
     }
+
+    /**
+     * Get details for a specific village by ID with full parent hierarchy.
+     */
+    public function getVillageById(int $id): VillageData
+    {
+        return VillageData::from(
+            Village::with(['district.regency.province'])->findOrFail($id)
+        );
+    }
+
+    /**
+     * Get details for a specific district by ID with full parent hierarchy.
+     */
+    public function getDistrictById(int $id): DistrictData
+    {
+        return DistrictData::from(
+            District::with(['regency.province'])->findOrFail($id)
+        );
+    }
+
+    /**
+     * Get details for a specific regency by ID with full parent hierarchy.
+     */
+    public function getRegencyById(int $id): RegencyData
+    {
+        return RegencyData::from(
+            Regency::with(['province'])->findOrFail($id)
+        );
+    }
 }

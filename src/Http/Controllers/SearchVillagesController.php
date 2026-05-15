@@ -13,7 +13,9 @@ class SearchVillagesController extends Controller
     {
         return Region::searchVillages(
             $request->query('q'),
-            $request->query('district_id'),
+            null,
+            null,
+            $request->query('district_id') ? (int) $request->query('district_id') : null,
             (int) $request->query('limit', 15)
         );
     }

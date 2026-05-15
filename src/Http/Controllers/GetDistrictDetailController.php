@@ -10,6 +10,6 @@ class GetDistrictDetailController extends Controller
 {
     public function __invoke(int $provinceId, int $regencyId, int $districtId): DistrictData
     {
-        return Region::getDistrictDetail($districtId);
+        return Region::getDistrictDetail($provinceId, $regencyId, $districtId);
     }
 }

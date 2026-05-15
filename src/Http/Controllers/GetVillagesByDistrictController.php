@@ -13,6 +13,8 @@ class GetVillagesByDistrictController extends Controller
     {
         return Region::searchVillages(
             null,
+            $provinceId,
+            $regencyId,
             $districtId,
             (int) $request->query('limit', 15)
         );

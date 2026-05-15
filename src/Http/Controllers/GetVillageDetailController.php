@@ -10,6 +10,6 @@ class GetVillageDetailController extends Controller
 {
     public function __invoke(int $provinceId, int $regencyId, int $districtId, int $villageId): VillageData
     {
-        return Region::getVillageDetail($villageId);
+        return Region::getVillageDetail($provinceId, $regencyId, $districtId, $villageId);
     }
 }

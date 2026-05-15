@@ -13,7 +13,8 @@ class SearchDistrictsController extends Controller
     {
         return Region::searchDistricts(
             $request->query('q'),
-            $request->query('regency_id'),
+            null,
+            $request->query('regency_id') ? (int) $request->query('regency_id') : null,
             (int) $request->query('limit', 15)
         );
     }

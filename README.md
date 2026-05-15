@@ -11,8 +11,8 @@ A high-performance, governed Laravel package for Indonesian regional data (Provi
 - **Full Indonesian Hierarchy**: Provinces → Regencies → Districts → Villages.
 - **Deep RESTful API**: Intuitive hierarchical routing (e.g., `provinces/{id}/regencies`).
 - **High-Performance Seeding**: Chunked data ingestion for high-volume datasets (Villages).
+- **Zero-Config Auto-Discovery**: Works out of the box without publishing files.
 - **Governed Architecture**: Strict `camelCase` DTOs and FormRequest validation.
-- **Facade Support**: Fluent programmatic access for internal application logic.
 
 ## Installation
 
@@ -30,36 +30,25 @@ This package supports **Laravel Auto-Discovery**. After installation, you can im
 # 1. Run migrations directly from the package
 php artisan migrate
 
-# 2. Seed the regional data
+# 2. Seed the regional data using the high-performance command
 php artisan indonesia:seed
 ```
 
-### Verification
-Once the seeding is complete, your API is live! Verify the endpoints are active:
-```bash
-php artisan route:list --path=api/region
+### Integration with `php artisan db:seed`
+
+If you want to include the regional data as part of your standard application seeding process, add the following to your `database/seeders/DatabaseSeeder.php`:
+
+```php
+public function run(): void
+{
+    // Call the package's high-performance seeder
+    $this->command->call('indonesia:seed');
+}
 ```
-
-## Optional Customization
-
-If you need to override the default behavior, you can publish the package assets:
-
-### Customizing Migrations
-If you need to add custom fields or change indices, publish the migration stubs:
-```bash
-php artisan vendor:publish --tag="region-migrations"
-```
-
-### Customizing Configuration & Routes
-To change the API prefix, middleware, or table names, publish the configuration file:
-```bash
-php artisan vendor:publish --tag="region-config"
-```
-Then, modify `config/region.php` to suit your requirements.
 
 ## API Usage
 
-All routes are prefixed with `/api/region` and are governed by the middleware defined in your configuration.
+All routes are prefixed with `/api/region`.
 
 ### Hierarchical Endpoints
 
@@ -74,60 +63,33 @@ All routes are prefixed with `/api/region` and are governed by the middleware de
 
 ### Query Parameters
 
-All list endpoints support the following parameters:
-- `q`: Search by name (string).
+All list endpoints support:
+- `q`: Search by name.
 - `limit`: Pagination limit (default: 15, max: 100).
 
-## Programmatic Usage
+## Optional Customization
 
-You can access the regional data directly in your application logic using the `Region` facade:
+If you need to override the default behavior, publish the assets:
 
-```php
-use DyanGalih\LaravelRegion\Facades\Region;
+```bash
+# Publish migrations for customization
+php artisan vendor:publish --tag="region-migrations"
 
-// Search provinces
-$provinces = Region::searchProvinces('JAWA', limit: 10);
-
-// Get specific village with parent hierarchy
-$village = Region::getVillageDetail($villageId);
-echo $village->district->regency->province->name;
+# Publish config (prefix, middleware, table names)
+php artisan vendor:publish --tag="region-config"
 ```
 
 ## Development
 
-To develop or contribute to this plugin:
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/DyanGalih/laravel-region.git
-   cd laravel-region
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   composer install
-   ```
-
-3. **Running Tests**:
-   The package uses Pest PHP for testing. Ensure your environment is set up and run:
-   ```bash
-   composer test
-   ```
-
-4. **Code Quality**:
-   We use Laravel Pint for code styling. Please run it before submitting PRs:
-   ```bash
-   composer lint
-   ```
+```bash
+composer install
+composer test
+composer lint
+```
 
 ## Security
 
 If you discover any security-related issues, please email galih@example.com instead of using the issue tracker.
-
-## Credits
-
-- [Dyan Galih](https://github.com/DyanGalih)
-- [All Contributors](../../contributors)
 
 ## License
 

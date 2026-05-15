@@ -22,48 +22,36 @@ You can install the package via composer:
 composer require dyangalih/laravel-region
 ```
 
-## Integration & Setup
+## Quick Start (Zero-Config)
 
-### 1. Migrations
-The package's migrations are loaded automatically. You can run them directly:
+This package supports **Laravel Auto-Discovery**. After installation, you can immediately prepare your database and seed the regional data without publishing any configuration or migration files:
 
 ```bash
+# 1. Run migrations directly from the package
 php artisan migrate
-```
 
-If you need to customize the migrations, you can still publish the stubs to your root application:
-
-```bash
-php artisan vendor:publish --tag="region-migrations"
-```
-
-### 2. Seeding Data
-Once migrations are complete, you can populate the tables using the high-performance seeder command. This command will read the regional CSV data and perform chunked inserts:
-
-```bash
+# 2. Seed the regional data
 php artisan indonesia:seed
 ```
 
-#### Integration with Root `DatabaseSeeder`
-To include the regional data as part of your standard application setup, you can call the command from your `database/seeders/DatabaseSeeder.php`:
-
-```php
-public function run(): void
-{
-    $this->command->call('indonesia:seed');
-}
-```
-
-### 3. Enabling Routes
-The package automatically registers its routes via the `RegionServiceProvider`. By default, all endpoints are prefixed with `/api/region` and protected by the `api` middleware.
-
-To verify the routes are active in your application, run:
+### Verification
+Once the seeding is complete, your API is live! Verify the endpoints are active:
 ```bash
 php artisan route:list --path=api/region
 ```
 
-#### Customizing Middleware
-If you need to change the middleware or other routing configurations, publish the config file:
+## Optional Customization
+
+If you need to override the default behavior, you can publish the package assets:
+
+### Customizing Migrations
+If you need to add custom fields or change indices, publish the migration stubs:
+```bash
+php artisan vendor:publish --tag="region-migrations"
+```
+
+### Customizing Configuration & Routes
+To change the API prefix, middleware, or table names, publish the configuration file:
 ```bash
 php artisan vendor:publish --tag="region-config"
 ```

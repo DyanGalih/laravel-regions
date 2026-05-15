@@ -17,17 +17,13 @@ class RegionService
 {
     public function searchProvinces(?string $query = null, int $limit = 15): PaginatedDataCollection
     {
-        $cacheKey = "provinces.search." . md5($query . $limit . request()->get('page', 1));
+        $q = $this->provinceQuery();
+        
+        if ($query) {
+            $q->where('name', 'LIKE', "%{$query}%");
+        }
 
-        return $this->remember($cacheKey, function () use ($query, $limit) {
-            $q = Province::query();
-            
-            if ($query) {
-                $q->where('name', 'LIKE', "%{$query}%");
-            }
-
-            return ProvinceData::collect($q->paginate($limit), PaginatedDataCollection::class);
-        });
+        return ProvinceData::collect($q->paginate($limit), PaginatedDataCollection::class);
     }
 
     /**
@@ -38,21 +34,17 @@ class RegionService
         ?int $provinceId = null,
         int $limit = 15
     ): PaginatedDataCollection {
-        $cacheKey = "regencies.search." . md5($query . $provinceId . $limit . request()->get('page', 1));
+        $queryBuilder = $this->regencyQuery();
 
-        return $this->remember($cacheKey, function () use ($query, $provinceId, $limit) {
-            $queryBuilder = $this->regencyQuery();
+        if ($query) {
+            $queryBuilder->where('name', 'like', "%{$query}%");
+        }
 
-            if ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            }
+        if ($provinceId) {
+            $queryBuilder->where('province_id', $provinceId);
+        }
 
-            if ($provinceId) {
-                $queryBuilder->where('province_id', $provinceId);
-            }
-
-            return RegencyData::collect($queryBuilder->paginate($limit), PaginatedDataCollection::class);
-        });
+        return RegencyData::collect($queryBuilder->paginate($limit), PaginatedDataCollection::class);
     }
 
     /**
@@ -64,27 +56,23 @@ class RegionService
         ?int $regencyId = null,
         int $limit = 15
     ): PaginatedDataCollection {
-        $cacheKey = "districts.search." . md5($query . $provinceId . $regencyId . $limit . request()->get('page', 1));
+        $queryBuilder = $this->districtQuery();
 
-        return $this->remember($cacheKey, function () use ($query, $provinceId, $regencyId, $limit) {
-            $queryBuilder = $this->districtQuery();
+        if ($query) {
+            $queryBuilder->where('name', 'like', "%{$query}%");
+        }
 
-            if ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
+        if ($regencyId) {
+            $regency = Regency::findOrFail($regencyId);
+            
+            if ($provinceId && $regency->province_id !== $provinceId) {
+                abort(404, 'Regency does not belong to the specified province.');
             }
 
-            if ($regencyId) {
-                $regency = Regency::findOrFail($regencyId);
-                
-                if ($provinceId && $regency->province_id !== $provinceId) {
-                    abort(404, 'Regency does not belong to the specified province.');
-                }
+            $queryBuilder->where('regency_id', $regencyId);
+        }
 
-                $queryBuilder->where('regency_id', $regencyId);
-            }
-
-            return DistrictData::collect($queryBuilder->paginate($limit), PaginatedDataCollection::class);
-        });
+        return DistrictData::collect($queryBuilder->paginate($limit), PaginatedDataCollection::class);
     }
 
     /**
@@ -97,17 +85,14 @@ class RegionService
         ?int $districtId = null,
         int $limit = 15
     ): PaginatedDataCollection {
-        $cacheKey = "villages.search." . md5($query . $provinceId . $regencyId . $districtId . $limit . request()->get('page', 1));
+        $queryBuilder = $this->villageQuery();
 
-        return $this->remember($cacheKey, function () use ($query, $provinceId, $regencyId, $districtId, $limit) {
-            $queryBuilder = $this->villageQuery();
+        if ($query) {
+            $queryBuilder->where('name', 'like', "%{$query}%");
+        }
 
-            if ($query) {
-                $queryBuilder->where('name', 'like', "%{$query}%");
-            }
-
-            if ($districtId) {
-                $district = District::with('regency')->findOrFail($districtId);
+        if ($districtId) {
+            $district = District::with('regency')->findOrFail($districtId);
 
                 if ($regencyId && $district->regency_id !== $regencyId) {
                     abort(404, 'District does not belong to the specified regency.');
@@ -117,11 +102,10 @@ class RegionService
                     abort(404, 'District does not belong to the specified province.');
                 }
 
-                $queryBuilder->where('district_id', $districtId);
-            }
+            $queryBuilder->where('district_id', $districtId);
+        }
 
-            return VillageData::collect($queryBuilder->paginate($limit), PaginatedDataCollection::class);
-        });
+        return VillageData::collect($queryBuilder->paginate($limit), PaginatedDataCollection::class);
     }
 
     /**
@@ -190,7 +174,7 @@ class RegionService
     public function getProvinceDetail(int $provinceId): ProvinceData
     {
         return $this->remember("province.detail.{$provinceId}", function () use ($provinceId) {
-            return ProvinceData::from(Province::findOrFail($provinceId));
+            return ProvinceData::from($this->provinceQuery()->findOrFail($provinceId));
         });
     }
 
@@ -225,17 +209,56 @@ class RegionService
     }
 
     /**
+     * Flush all regional cache by incrementing the cache version.
+     */
+    public function flushCache(): void
+    {
+        Cache::increment('region.cache_version');
+    }
+
+    /**
+     * Get the versioned cache key.
+     */
+    protected function getCacheKey(string $key): string
+    {
+        $version = Cache::get('region.cache_version', 1);
+        return "region.v{$version}.{$key}";
+    }
+
+    /**
      * Internal helper to handle cached lookups.
      */
     protected function remember(string $key, \Closure $callback): mixed
     {
-        $ttl = config('region.cache_ttl', 86400); // Default 24 hours
+        $ttl = config('region.cache_ttl', -1); // Default to forever (-1)
         
         if ($ttl === 0) {
             return $callback();
         }
 
-        return Cache::remember("region.{$key}", $ttl, $callback);
+        $fullKey = $this->getCacheKey($key);
+        $cached = Cache::get($fullKey);
+        
+        // Self-healing: If we hit an incomplete class (serialization error), 
+        // purge it and re-generate.
+        if ($cached instanceof \__PHP_Incomplete_Class) {
+            Cache::forget($fullKey);
+            $cached = null;
+        }
+
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $value = $callback();
+
+        if ($ttl === -1) {
+            Cache::forever($fullKey, $value);
+        } else {
+            Cache::put($fullKey, $value, $ttl);
+        }
+
+        return $value;
     }
 
     /**
@@ -252,6 +275,14 @@ class RegionService
     protected function districtQuery()
     {
         return District::query()->with(['regency.province']);
+    }
+
+    /**
+     * Base query for provinces.
+     */
+    protected function provinceQuery()
+    {
+        return Province::query();
     }
 
     /**

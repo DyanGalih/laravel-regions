@@ -17,14 +17,15 @@ A high-performance, governed Laravel package for Indonesian regional data (Provi
 - **Full Indonesian Hierarchy**: Provinces → Regencies → Districts → Villages.
 - **Dual-Access API**: Support for both deep hierarchical and flat global endpoints.
 - **Deep Eager Loading**: Automatically includes full parent hierarchy without N+1 queries.
-- **High-Performance Seeding**: Chunked data ingestion for high-volume datasets.
+- **High-Performance Seeding**: Chunked data ingestion for high-volume datasets with automatic cache invalidation.
+- **Intelligent Caching**: Permanent versioned caching for detail lookups with self-healing serialization recovery.
 - **Zero-Config Auto-Discovery**: Works out of the box with standard Laravel commands.
 
 ## Engineering Standards
 
 This package was developed using an advanced AI-assisted engineering workflow to ensure production-grade stability:
-- **[Spec-Kit](https://github.com/DyanGalih/spec-kit)**: Orchestrated development from specification to implementation.
-- **Memory-Hub**, **Security-Review**, and **Architecture-Guard** enforced.
+- **[Spec-Kit](https://github.com/github/spec-kit)**: Orchestrated development from specification to implementation.
+- **[Memory-Hub](https://github.com/DyanGalih/spec-kit-memory-hub)**, **[Security-Review](https://github.com/DyanGalih/spec-kit-security-review)**, and **[Architecture-Guard](https://github.com/DyanGalih/spec-kit-architecture-guard)** enforced.
 
 ## Installation
 
@@ -137,9 +138,39 @@ public function getMyData()
 
 ---
 
+## Performance & Caching
+
+The package implements an **Intelligent Caching** layer designed for static regional data.
+
+### Forever Caching
+All detail and ID-based lookups (`get*ById`, `get*Detail`) are cached **forever** by default. This ensures near-zero latency for repeated requests.
+
+### Self-Healing Resilience
+To prevent crashes in unstable serialization environments (e.g., PHP 8.4 drift), the package automatically detects and purges corrupted cache entries (like `__PHP_Incomplete_Class`), re-generating them on the fly.
+
+### Cache Invalidation
+The cache is versioned (`region.v{version}.*`). When you update your regional data, you must increment the version to invalidate all existing cache.
+
+**Manual Flush:**
+```php
+use DyanGalih\LaravelRegion\Facades\Region;
+
+Region::flushCache();
+```
+
+**Automatic Flush:**
+The `php artisan indonesia:seed` command automatically triggers a cache flush upon successful completion.
+
+---
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Credits
+
+- **[Wilayah-Administrasi-Indonesia](https://github.com/guzfirdaus/Wilayah-Administrasi-Indonesia)**: The primary source for the Indonesian regional CSV data.
+- **[Spec-Kit](https://github.com/github/spec-kit)**: The engineering framework used for governed development.
 
 ## License
 

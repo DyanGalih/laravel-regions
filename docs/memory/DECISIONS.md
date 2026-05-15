@@ -205,3 +205,60 @@ Prevents 'naming leakage' where internal database column changes affect the publ
 
 **Evidence**
 Implemented in all Data objects under src/Data/ and codified in Architecture Constitution v1.2.0.
+
+---
+
+### 2026-05-15 - Self-Healing Cache Versioning Strategy
+
+**Status**
+Active
+
+**Why this is durable**
+Prevents system-wide crashes due to inconsistent serialization states (e.g., `__PHP_Incomplete_Class`) often encountered in dynamic environments like PHP 8.4 or shared cache clusters. It provides a repeatable pattern for handling library-level serialization bugs without blocking production stability.
+
+**Decision**
+Implement a versioned cache key strategy (`region.v{version}.{key}`) combined with a self-healing detection block in the `remember` helper. The helper must explicitly check for `__PHP_Incomplete_Class` and purge the key before re-executing the callback.
+
+**Tradeoffs**
+- **Gained**: High resilience to environment-specific serialization bugs; instant cache invalidation across all drivers via a single version increment.
+- **Made harder**: Requires all cache-aware service lookups to flow through the centralized `remember` helper.
+- **Reconsider**: If moving to a more stable binary serializer like `igbinary` or if the underlying library bug (e.g., in `spatie/laravel-data`) is definitively resolved at the dependency level.
+
+**Future mistake prevented**
+Prevents unrecoverable application crashes caused by stale or incompatible cache serialization, which are notoriously difficult to debug in production.
+
+**Evidence**
+Identified and implemented in `RegionService.php` during the PHP 8.4 environment stabilization turn.
+
+**Where to look next**
+`src/Services/RegionService.php::remember`
+
+---
+
+### 2026-05-15 - Layered Project Constitution Hub
+
+**Status**
+Active
+
+**Why this is durable**
+Scalable governance requires separating high-level engineering philosophy (intent) from enforceable, low-level architectural rules (implementation). This prevents "bloated" constitutions and ensures clear ownership of standards during automated architecture reviews.
+
+**Decision**
+Adopt a three-tier constitution structure in `.specify/memory/`:
+1. `constitution.md`: Global intent, philosophy, and high-level governance.
+2. `architecture_constitution.md`: Enforceable structural rules (layering, caching, DTOs).
+3. `security_constitution.md`: Trust boundaries and data isolation policies.
+
+**Tradeoffs**
+- **Gained**: Clearer documentation hierarchy; easier to audit specific concerns; prevents standard "bloat" by isolating implementation-specific rules from general philosophy.
+- **Made harder**: Requires maintaining consistency across three distinct documents.
+- **Reconsider**: Only if project complexity decreases to the point where a single document is more efficient (e.g., < 5 models).
+
+**Future mistake prevented**
+Prevents architectural drift caused by "unclear intent" and reduces the risk of overlooking security standards when they are buried within general engineering documentation.
+
+**Evidence**
+Implemented in `.specify/memory/` as part of the project hardening phase.
+
+**Where to look next**
+`.specify/memory/constitution.md`

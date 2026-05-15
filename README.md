@@ -1,10 +1,16 @@
 # Laravel Indonesian Region API
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/dyangalih/laravel-region.svg?style=flat-square)](https://pacakgist.org/packages/dyangalih/laravel-region)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/dyangalih/laravel-region.svg?style=flat-square)](https://packagist.org/packages/dyangalih/laravel-region)
+[![Laravel Version](https://img.shields.io/badge/laravel-10%2F11-red?style=flat-square&logo=laravel)](https://laravel.com)
 [![Total Downloads](https://img.shields.io/packagist/dt/dyangalih/laravel-region.svg?style=flat-square)](https://packagist.org/packages/dyangalih/laravel-region)
 [![License](https://img.shields.io/packagist/l/dyangalih/laravel-region.svg?style=flat-square)](https://packagist.org/packages/dyangalih/laravel-region)
 
 A high-performance, governed Laravel package for Indonesian regional data (Provinces, Regencies, Districts, and Villages). Featuring a deep hierarchical REST API, global search capabilities, and optimized data ingestion.
+
+## Requirements
+
+- **PHP**: `^8.2`
+- **Laravel**: `^10.0` or `^11.0`
 
 ## Features
 

@@ -8,7 +8,7 @@ use DyanGalih\LaravelRegion\Facades\Region;
 
 class GetDistrictDetailController extends Controller
 {
-    public function __invoke(int $districtId): DistrictData
+    public function __invoke(int $provinceId, int $regencyId, int $districtId): DistrictData
     {
         return Region::getDistrictDetail($districtId);
     }

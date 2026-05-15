@@ -9,7 +9,7 @@ use DyanGalih\LaravelRegion\Http\Requests\RegionListRequest;
 
 class GetVillagesByDistrictController extends Controller
 {
-    public function __invoke(RegionListRequest $request, int $districtId): PaginatedDataCollection
+    public function __invoke(RegionListRequest $request, int $provinceId, int $regencyId, int $districtId): PaginatedDataCollection
     {
         return Region::searchVillages(
             null,

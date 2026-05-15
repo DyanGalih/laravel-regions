@@ -42,3 +42,25 @@ it('can get village detail with full parent hierarchy', function () {
         ->assertJsonPath('district.regency.name', 'KAB. ACEH SELATAN')
         ->assertJsonPath('district.regency.province.name', 'ACEH');
 });
+
+it('can search regencies globally', function () {
+    Province::create(['id' => 32, 'name' => 'JAWA BARAT']);
+    Regency::create(['id' => 3201, 'province_id' => 32, 'name' => 'KAB. BOGOR']);
+
+    $response = $this->getJson('/api/region/search/regencies?q=BOGOR');
+
+    $response->assertStatus(200)
+        ->assertJsonFragment(['name' => 'KAB. BOGOR']);
+});
+
+it('can search districts globally with regency filter', function () {
+    Province::create(['id' => 32, 'name' => 'JAWA BARAT']);
+    Regency::create(['id' => 3201, 'province_id' => 32, 'name' => 'KAB. BOGOR']);
+    District::create(['id' => 320101, 'regency_id' => 3201, 'name' => 'CIBINONG']);
+
+    $response = $this->getJson('/api/region/search/districts?q=CIBINONG&regency_id=3201');
+
+    $response->assertStatus(200)
+        ->assertJsonFragment(['name' => 'CIBINONG']);
+});
+

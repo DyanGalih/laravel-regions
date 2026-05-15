@@ -8,7 +8,7 @@ use DyanGalih\LaravelRegion\Facades\Region;
 
 class GetRegencyDetailController extends Controller
 {
-    public function __invoke(int $regencyId): RegencyData
+    public function __invoke(int $provinceId, int $regencyId): RegencyData
     {
         return Region::getRegencyDetail($regencyId);
     }

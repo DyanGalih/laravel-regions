@@ -9,6 +9,9 @@ use DyanGalih\LaravelRegion\Http\Controllers\GetDistrictsByRegencyController;
 use DyanGalih\LaravelRegion\Http\Controllers\GetDistrictDetailController;
 use DyanGalih\LaravelRegion\Http\Controllers\GetVillagesByDistrictController;
 use DyanGalih\LaravelRegion\Http\Controllers\GetVillageDetailController;
+use DyanGalih\LaravelRegion\Http\Controllers\SearchRegenciesController;
+use DyanGalih\LaravelRegion\Http\Controllers\SearchDistrictsController;
+use DyanGalih\LaravelRegion\Http\Controllers\SearchVillagesController;
 
 Route::prefix('api/region')->middleware(config('region.middleware'))->group(function () {
     // Provinces Hierarchy
@@ -33,5 +36,12 @@ Route::prefix('api/region')->middleware(config('region.middleware'))->group(func
                 });
             });
         });
+    });
+
+    // Global Search
+    Route::prefix('search')->group(function () {
+        Route::get('regencies', SearchRegenciesController::class)->name('region.search.regencies');
+        Route::get('districts', SearchDistrictsController::class)->name('region.search.districts');
+        Route::get('villages', SearchVillagesController::class)->name('region.search.villages');
     });
 });

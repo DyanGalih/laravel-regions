@@ -14,6 +14,11 @@ use DyanGalih\LaravelRegion\Http\Controllers\SearchDistrictsController;
 use DyanGalih\LaravelRegion\Http\Controllers\SearchVillagesController;
 
 Route::prefix('api/region')->middleware(config('region.middleware'))->group(function () {
+    // Global Flat Routes
+    Route::get('regencies', SearchRegenciesController::class)->name('region.regencies.index');
+    Route::get('districts', SearchDistrictsController::class)->name('region.districts.index');
+    Route::get('villages', SearchVillagesController::class)->name('region.villages.index');
+
     // Provinces Hierarchy
     Route::prefix('provinces')->group(function () {
         Route::get('/', ListProvincesController::class)->name('region.provinces.index');

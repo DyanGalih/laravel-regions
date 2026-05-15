@@ -28,7 +28,10 @@ class SeedRegionsCommand extends Command
         $this->seedDistricts("{$path}/districts.csv");
         $this->seedVillages("{$path}/villages.csv");
 
-        $this->info('Seeding completed successfully.');
+        // Flush cache after seeding to ensure new data is visible
+        app(\DyanGalih\LaravelRegion\Services\RegionService::class)->flushCache();
+
+        $this->info('Seeding completed successfully and cache has been flushed.');
 
         return self::SUCCESS;
     }

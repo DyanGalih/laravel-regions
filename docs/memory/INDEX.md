@@ -16,6 +16,8 @@ This is a compact routing map for durable project memory (`docs/memory/`). Keep 
 - D4 | Invokable Single-Action Controllers | architecture,controllers,laravel | [DECISIONS.md](DECISIONS.md) | active
 - D5 | Mandatory Top-Level Import Discipline | architecture,coding-standards,php | [DECISIONS.md](DECISIONS.md) | active
 - D6 | Mandatory camelCase DTO Properties | architecture,api,standards | [DECISIONS.md](DECISIONS.md) | active
+- D7 | Self-Healing Cache Versioning Strategy | architecture,performance,resilience | [DECISIONS.md](DECISIONS.md) | active
+- D8 | Layered Project Constitution Hub | architecture,governance,standards | [DECISIONS.md](DECISIONS.md) | active
 
 ## Workflow
 - W1 | Regional Data API Planning | planning,api,laravel-region | [WORKLOG.md](WORKLOG.md) | active

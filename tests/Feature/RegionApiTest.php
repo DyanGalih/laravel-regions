@@ -5,8 +5,22 @@ use DyanGalih\LaravelRegion\Models\Regency;
 use DyanGalih\LaravelRegion\Models\District;
 use DyanGalih\LaravelRegion\Models\Village;
 use DyanGalih\LaravelRegion\Tests\TestCase;
+use DyanGalih\LaravelRegion\Facades\Region;
 
 uses(TestCase::class);
+
+it('can cache search results', function () {
+    Province::create(['id' => 11, 'name' => 'ACEH']);
+    
+    // First call to seed cache
+    $results1 = Region::searchProvinces('ACEH');
+    
+    // Second call to hit cache
+    $results2 = Region::searchProvinces('ACEH');
+    
+    expect($results2)->toBeInstanceOf(\Spatie\LaravelData\PaginatedDataCollection::class);
+    expect($results2->items()->first()->name)->toBe('ACEH');
+});
 
 it('can list provinces with limit', function () {
     Province::create(['id' => 11, 'name' => 'ACEH']);

@@ -69,6 +69,17 @@ All routes are prefixed with `/api/region`.
 | `GET` | `/provinces/{pId}/regencies/{rId}` | Get regency details |
 | `GET` | `/provinces/{pId}/regencies/{rId}/districts` | List districts in a regency |
 | `GET` | `/provinces/{pId}/regencies/{rId}/districts/{dId}/villages` | List villages in a district |
+| `GET` | `/provinces/{pId}/regencies/{rId}/districts/{dId}/villages/{vId}` | Get village details |
+
+### Global Search Endpoints
+
+These endpoints allow searching across the entire Indonesian hierarchy without nested IDs.
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/regencies` | Global search regencies |
+| `GET` | `/districts` | Global search districts |
+| `GET` | `/villages` | Global search villages |
 
 ### Query Parameters
 

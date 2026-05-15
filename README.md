@@ -22,26 +22,47 @@ You can install the package via composer:
 composer require dyangalih/laravel-region
 ```
 
-You can publish and run the migrations with:
+## Integration & Setup
+
+### 1. Migrations
+The package uses database migrations to create the necessary tables. You must publish the migration stubs to your root application:
 
 ```bash
 php artisan vendor:publish --tag="region-migrations"
 php artisan migrate
 ```
 
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="region-config"
-```
-
-## Data Ingestion
-
-The package includes a command to seed the regional data from CSV files. By default, it expects the CSV files to be located in the path defined in your `region.php` config.
+### 2. Seeding Data
+Once migrations are complete, you can populate the tables using the high-performance seeder command. This command will read the regional CSV data and perform chunked inserts:
 
 ```bash
 php artisan indonesia:seed
 ```
+
+#### Integration with Root `DatabaseSeeder`
+To include the regional data as part of your standard application setup, you can call the command from your `database/seeders/DatabaseSeeder.php`:
+
+```php
+public function run(): void
+{
+    $this->command->call('indonesia:seed');
+}
+```
+
+### 3. Enabling Routes
+The package automatically registers its routes via the `RegionServiceProvider`. By default, all endpoints are prefixed with `/api/region` and protected by the `api` middleware.
+
+To verify the routes are active in your application, run:
+```bash
+php artisan route:list --path=api/region
+```
+
+#### Customizing Middleware
+If you need to change the middleware or other routing configurations, publish the config file:
+```bash
+php artisan vendor:publish --tag="region-config"
+```
+Then, modify `config/region.php` to suit your requirements.
 
 ## API Usage
 

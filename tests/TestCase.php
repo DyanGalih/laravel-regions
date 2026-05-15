@@ -36,10 +36,10 @@ class TestCase extends Orchestra
         ]);
 
         $migrations = [
-            'create_indonesia_provinces_table',
-            'create_indonesia_regencies_table',
-            'create_indonesia_districts_table',
-            'create_indonesia_villages_table',
+            '2024_01_01_000001_create_indonesia_provinces_table',
+            '2024_01_01_000002_create_indonesia_regencies_table',
+            '2024_01_01_000003_create_indonesia_districts_table',
+            '2024_01_01_000004_create_indonesia_villages_table',
         ];
 
         foreach ($migrations as $migration) {

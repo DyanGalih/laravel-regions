@@ -10,6 +10,6 @@ class GetRegencyDetailController extends Controller
 {
     public function __invoke(int $provinceId, int $regencyId): RegencyData
     {
-        return Region::getRegencyDetail($regencyId);
+        return Region::getRegencyDetail($provinceId, $regencyId);
     }
 }

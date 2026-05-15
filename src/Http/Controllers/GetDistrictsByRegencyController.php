@@ -13,6 +13,7 @@ class GetDistrictsByRegencyController extends Controller
     {
         return Region::searchDistricts(
             null,
+            $provinceId,
             $regencyId,
             (int) $request->query('limit', 15)
         );

@@ -40,6 +40,8 @@ class RegionService
         }
 
         if ($provinceId) {
+            // Validate province exists
+            Province::findOrFail($provinceId);
             $q->where('province_id', $provinceId);
         }
 
@@ -49,7 +51,7 @@ class RegionService
     /**
      * List districts with search and limit.
      */
-    public function searchDistricts(?string $query = null, ?int $regencyId = null, int $limit = 15): PaginatedDataCollection
+    public function searchDistricts(?string $query = null, ?int $provinceId = null, ?int $regencyId = null, int $limit = 15): PaginatedDataCollection
     {
         $q = District::query();
         
@@ -58,6 +60,12 @@ class RegionService
         }
 
         if ($regencyId) {
+            $regency = Regency::findOrFail($regencyId);
+            
+            if ($provinceId && $regency->province_id !== $provinceId) {
+                abort(404, 'Regency does not belong to the specified province.');
+            }
+
             $q->where('regency_id', $regencyId);
         }
 
@@ -67,7 +75,7 @@ class RegionService
     /**
      * List villages with search and limit.
      */
-    public function searchVillages(?string $query = null, ?int $districtId = null, int $limit = 15): PaginatedDataCollection
+    public function searchVillages(?string $query = null, ?int $provinceId = null, ?int $regencyId = null, ?int $districtId = null, int $limit = 15): PaginatedDataCollection
     {
         $q = Village::query();
         
@@ -76,6 +84,16 @@ class RegionService
         }
 
         if ($districtId) {
+            $district = District::with('regency')->findOrFail($districtId);
+
+            if ($regencyId && $district->regency_id !== $regencyId) {
+                abort(404, 'District does not belong to the specified regency.');
+            }
+
+            if ($provinceId && $district->regency->province_id !== $provinceId) {
+                abort(404, 'District does not belong to the specified province.');
+            }
+
             $q->where('district_id', $districtId);
         }
 
@@ -85,9 +103,18 @@ class RegionService
     /**
      * Get details for a specific village with full parent hierarchy.
      */
-    public function getVillageDetail(int $villageId): VillageData
+    public function getVillageDetail(int $provinceId, int $regencyId, int $districtId, int $villageId): VillageData
     {
-        $village = Village::with(['district.regency.province'])->findOrFail($villageId);
+        $village = Village::where('id', $villageId)
+            ->where('district_id', $districtId)
+            ->whereHas('district', function ($q) use ($regencyId, $provinceId) {
+                $q->where('regency_id', $regencyId)
+                  ->whereHas('regency', function ($q) use ($provinceId) {
+                      $q->where('province_id', $provinceId);
+                  });
+            })
+            ->with(['district.regency.province'])
+            ->firstOrFail();
 
         return VillageData::from($village);
     }
@@ -95,9 +122,15 @@ class RegionService
     /**
      * Get details for a specific district with full parent hierarchy.
      */
-    public function getDistrictDetail(int $districtId): DistrictData
+    public function getDistrictDetail(int $provinceId, int $regencyId, int $districtId): DistrictData
     {
-        $district = District::with(['regency.province'])->findOrFail($districtId);
+        $district = District::where('id', $districtId)
+            ->where('regency_id', $regencyId)
+            ->whereHas('regency', function ($q) use ($provinceId) {
+                $q->where('province_id', $provinceId);
+            })
+            ->with(['regency.province'])
+            ->firstOrFail();
 
         return DistrictData::from($district);
     }
@@ -105,9 +138,12 @@ class RegionService
     /**
      * Get details for a specific regency with full parent hierarchy.
      */
-    public function getRegencyDetail(int $regencyId): RegencyData
+    public function getRegencyDetail(int $provinceId, int $regencyId): RegencyData
     {
-        $regency = Regency::with(['province'])->findOrFail($regencyId);
+        $regency = Regency::where('id', $regencyId)
+            ->where('province_id', $provinceId)
+            ->with(['province'])
+            ->firstOrFail();
 
         return RegencyData::from($regency);
     }

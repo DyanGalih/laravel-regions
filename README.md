@@ -14,6 +14,15 @@ A high-performance, governed Laravel package for Indonesian regional data (Provi
 - **Zero-Config Auto-Discovery**: Works out of the box without publishing files.
 - **Governed Architecture**: Strict `camelCase` DTOs and FormRequest validation.
 
+## Engineering Standards
+
+This package was developed using an advanced AI-assisted engineering workflow to ensure production-grade stability and security:
+
+- **[Spec-Kit](https://github.com/DyanGalih/spec-kit)**: Orchestrated the entire development lifecycle from specification to implementation.
+- **Memory-Hub**: Provided a durable project memory to maintain context and technical decisions across the development history.
+- **Security-Review**: Enforced rigorous security audits during the implementation phase to mitigate common vulnerabilities.
+- **Architecture-Guard**: Guaranteed that all code adheres to a strict [Architecture Constitution](.specify/memory/architecture_constitution.md), preventing technical debt and architectural drift.
+
 ## Installation
 
 You can install the package via composer:

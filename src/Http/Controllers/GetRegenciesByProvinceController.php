@@ -12,7 +12,7 @@ class GetRegenciesByProvinceController extends Controller
     public function __invoke(RegionListRequest $request, int $provinceId): PaginatedDataCollection
     {
         return Region::searchRegencies(
-            null,
+            $request->query('q'),
             $provinceId,
             (int) $request->query('limit', 15)
         );

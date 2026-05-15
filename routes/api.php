@@ -16,43 +16,54 @@ use DyanGalih\LaravelRegion\Http\Controllers\GetRegencyByIdController;
 use DyanGalih\LaravelRegion\Http\Controllers\GetDistrictByIdController;
 use DyanGalih\LaravelRegion\Http\Controllers\GetVillageByIdController;
 
-Route::prefix('api/region')->middleware(config('region.middleware'))->group(function () {
-    // Global Flat Routes
-    Route::get('regencies', SearchRegenciesController::class)->name('region.regencies.index');
-    Route::get('regencies/{id}', GetRegencyByIdController::class)->name('region.regencies.show');
-    Route::get('districts', SearchDistrictsController::class)->name('region.districts.index');
-    Route::get('districts/{id}', GetDistrictByIdController::class)->name('region.districts.show');
-    Route::get('villages', SearchVillagesController::class)->name('region.villages.index');
-    Route::get('villages/{id}', GetVillageByIdController::class)->name('region.villages.show');
+Route::prefix('api/region')
+    ->middleware(config('region.middleware'))
+    ->name('region.')
+    ->group(function () {
+        // Global Flat Routes
+        Route::prefix('regencies')->name('regencies.')->group(function () {
+            Route::get('/', SearchRegenciesController::class)->name('index');
+            Route::get('{id}', GetRegencyByIdController::class)->name('show');
+        });
 
-    // Provinces Hierarchy
-    Route::prefix('provinces')->group(function () {
-        Route::get('/', ListProvincesController::class)->name('region.provinces.index');
-        Route::get('{provinceId}', GetProvinceDetailController::class)->name('region.provinces.show');
+        Route::prefix('districts')->name('districts.')->group(function () {
+            Route::get('/', SearchDistrictsController::class)->name('index');
+            Route::get('{id}', GetDistrictByIdController::class)->name('show');
+        });
 
-        // Nested Regencies
-        Route::prefix('{provinceId}/regencies')->group(function () {
-            Route::get('/', GetRegenciesByProvinceController::class)->name('region.provinces.regencies.index');
-            Route::get('{regencyId}', GetRegencyDetailController::class)->name('region.provinces.regencies.show');
+        Route::prefix('villages')->name('villages.')->group(function () {
+            Route::get('/', SearchVillagesController::class)->name('index');
+            Route::get('{id}', GetVillageByIdController::class)->name('show');
+        });
 
-            // Nested Districts
-            Route::prefix('{regencyId}/districts')->group(function () {
-                Route::get('/', GetDistrictsByRegencyController::class)->name('region.provinces.regencies.districts.index');
-                Route::get('{districtId}', GetDistrictDetailController::class)->name('region.provinces.regencies.districts.show');
+        // Provinces Hierarchy
+        Route::prefix('provinces')->name('provinces.')->group(function () {
+            Route::get('/', ListProvincesController::class)->name('index');
+            Route::get('{provinceId}', GetProvinceDetailController::class)->name('show');
 
-                // Nested Villages
-                Route::prefix('{districtId}/villages')->group(function () {
-                    Route::get('/', GetVillagesByDistrictController::class)->name('region.provinces.regencies.districts.villages.index');
-                    Route::get('{villageId}', GetVillageDetailController::class)->name('region.provinces.regencies.districts.villages.show');
+            // Nested Regencies
+            Route::prefix('{provinceId}/regencies')->name('regencies.')->group(function () {
+                Route::get('/', GetRegenciesByProvinceController::class)->name('index');
+                Route::get('{regencyId}', GetRegencyDetailController::class)->name('show');
+
+                // Nested Districts
+                Route::prefix('{regencyId}/districts')->name('districts.')->group(function () {
+                    Route::get('/', GetDistrictsByRegencyController::class)->name('index');
+                    Route::get('{districtId}', GetDistrictDetailController::class)->name('show');
+
+                    // Nested Villages
+                    Route::prefix('{districtId}/villages')->name('villages.')->group(function () {
+                        Route::get('/', GetVillagesByDistrictController::class)->name('index');
+                        Route::get('{villageId}', GetVillageDetailController::class)->name('show');
+                    });
                 });
             });
         });
-    });
 
-    // Global Search
-    Route::prefix('search')->group(function () {
-        Route::get('regencies', SearchRegenciesController::class)->name('region.search.regencies');
-        Route::get('districts', SearchDistrictsController::class)->name('region.search.districts');
-        Route::get('villages', SearchVillagesController::class)->name('region.search.villages');
+        // Backward compatibility Global Search (keep search prefix if needed)
+        Route::prefix('search')->name('search.')->group(function () {
+            Route::get('regencies', SearchRegenciesController::class)->name('regencies');
+            Route::get('districts', SearchDistrictsController::class)->name('districts');
+            Route::get('villages', SearchVillagesController::class)->name('villages');
+        });
     });
-});

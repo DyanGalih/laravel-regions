@@ -1,15 +1,14 @@
 {
-    "name": "dyangalih/laravel-region",
-    "description": "Indonesian regional data (Provinces, Regencies, Districts, Villages) for Laravel.",
+    "name": "dyangalih/laravel-regions",
+    "description": "Indonesian region with official data from kemendagri",
     "keywords": [
         "dyangalih",
-        "laravel",
-        "laravel-region",
+        "laravel-regions",
         "indonesia",
         "provinces",
         "regencies"
     ],
-    "homepage": "https://github.com/DyanGalih/laravel-region",
+    "homepage": "https://github.com/DyanGalih/laravel-regions",
     "license": "MIT",
     "authors": [
         {

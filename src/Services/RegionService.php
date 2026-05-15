@@ -53,7 +53,7 @@ class RegionService
      */
     public function searchDistricts(?string $query = null, ?int $provinceId = null, ?int $regencyId = null, int $limit = 15): PaginatedDataCollection
     {
-        $q = District::with('regency');
+        $q = District::with('regency.province');
         
         if ($query) {
             $q->where('name', 'LIKE', "%{$query}%");
@@ -77,7 +77,7 @@ class RegionService
      */
     public function searchVillages(?string $query = null, ?int $provinceId = null, ?int $regencyId = null, ?int $districtId = null, int $limit = 15): PaginatedDataCollection
     {
-        $q = Village::with('district');
+        $q = Village::with('district.regency.province');
         
         if ($query) {
             $q->where('name', 'LIKE', "%{$query}%");

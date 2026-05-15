@@ -78,8 +78,11 @@ These endpoints allow searching across the entire Indonesian hierarchy without n
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/regencies` | Global search regencies |
+| `GET` | `/regencies/{id}` | Get regency details globally |
 | `GET` | `/districts` | Global search districts |
+| `GET` | `/districts/{id}` | Get district details globally |
 | `GET` | `/villages` | Global search villages |
+| `GET` | `/villages/{id}` | Get village details globally |
 
 ### Query Parameters
 

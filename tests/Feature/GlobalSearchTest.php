@@ -33,3 +33,22 @@ it('can search districts globally using flat route', function () {
              ->assertJsonPath('data.0.name', 'BAKONGAN')
              ->assertJsonPath('data.0.regency.province.name', 'ACEH');
 });
+
+it('can get village details globally by ID', function () {
+    $response = $this->getJson("/api/region/villages/1101010001");
+    
+    $response->assertStatus(200)
+             ->assertJsonPath('id', 1101010001)
+             ->assertJsonPath('name', 'KEUDE BAKONGAN')
+             ->assertJsonPath('district.name', 'BAKONGAN')
+             ->assertJsonPath('district.regency.province.name', 'ACEH');
+});
+
+it('can get district details globally by ID', function () {
+    $response = $this->getJson("/api/region/districts/1101010");
+    
+    $response->assertStatus(200)
+             ->assertJsonPath('id', 1101010)
+             ->assertJsonPath('name', 'BAKONGAN')
+             ->assertJsonPath('regency.province.name', 'ACEH');
+});

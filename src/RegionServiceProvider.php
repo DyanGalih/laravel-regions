@@ -25,6 +25,7 @@ class RegionServiceProvider extends PackageServiceProvider
                 'create_indonesia_districts_table',
                 'create_indonesia_villages_table',
             ])
+            ->runsMigrations()
             ->hasRoute('api')
             ->hasCommand(SeedRegionsCommand::class);
     }

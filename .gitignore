@@ -1,0 +1,21 @@
+/vendor/
+/.idea/
+/.vscode/
+.DS_Store
+.env
+.phpunit.result.cache
+/tests/temp/
+/storage/*.key
+
+# Spec-Kit & Agentic Brain
+.agents/
+.specify/
+.spec-kit-memory/
+.gemini/
+specs/
+spec.md
+plan.md
+tasks.md
+GEMINI.md
+AGENTS.md
+.github/prompts/

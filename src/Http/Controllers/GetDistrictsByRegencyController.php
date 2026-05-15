@@ -12,7 +12,7 @@ class GetDistrictsByRegencyController extends Controller
     public function __invoke(RegionListRequest $request, int $provinceId, int $regencyId): PaginatedDataCollection
     {
         return Region::searchDistricts(
-            null,
+            $request->query('q'),
             $provinceId,
             $regencyId,
             (int) $request->query('limit', 15)

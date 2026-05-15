@@ -12,7 +12,7 @@ class GetVillagesByDistrictController extends Controller
     public function __invoke(RegionListRequest $request, int $provinceId, int $regencyId, int $districtId): PaginatedDataCollection
     {
         return Region::searchVillages(
-            null,
+            $request->query('q'),
             $provinceId,
             $regencyId,
             $districtId,

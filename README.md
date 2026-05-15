@@ -25,11 +25,16 @@ composer require dyangalih/laravel-region
 ## Integration & Setup
 
 ### 1. Migrations
-The package uses database migrations to create the necessary tables. You must publish the migration stubs to your root application:
+The package's migrations are loaded automatically. You can run them directly:
+
+```bash
+php artisan migrate
+```
+
+If you need to customize the migrations, you can still publish the stubs to your root application:
 
 ```bash
 php artisan vendor:publish --tag="region-migrations"
-php artisan migrate
 ```
 
 ### 2. Seeding Data

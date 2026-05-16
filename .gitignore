@@ -19,3 +19,6 @@ tasks.md
 GEMINI.md
 AGENTS.md
 .github/prompts/
+
+# Local tools
+.github/

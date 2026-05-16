@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square)](https://packagist.org/packages/dyangalih/laravel-regions)
 [![Status](https://img.shields.io/badge/status-stable-success?style=flat-square)](https://github.com/DyanGalih/laravel-regions)
 
-A high-performance, governed Laravel package for Indonesian regional data (Provinces, Regencies, Districts, and Villages). Featuring a deep hierarchical REST API, global search capabilities, and optimized data ingestion.
+A high-performance, governed Laravel package for Indonesian regional data (Provinces, Regencies, Districts, and Villages) using 2025 BPS & Kemendagri data. Featuring a deep hierarchical REST API, global search capabilities, and optimized data ingestion.
 
 ## Requirements
 
@@ -169,7 +169,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Credits
 
-- **[Wilayah-Administrasi-Indonesia](https://github.com/guzfirdaus/Wilayah-Administrasi-Indonesia)**: The primary source for the Indonesian regional CSV data.
+- **[wilayah_indonesia](https://github.com/SalzBytes/wilayah_indonesia)**: The primary source for the Indonesian regional CSV data (2025 BPS & Kemendagri).
 - **[Spec-Kit](https://github.com/github/spec-kit)**: The engineering framework used for governed development.
 
 ## License
